@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tufan Berkay Kurnaz | Dijital Merkez</title>
+    <style>
+        /* Genel Eğlenceli Ayarlar */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            color: white;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* Üst Bar ve 3 Çizgi Menü Alanı */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            position: absolute;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        /* 3 Çizgi Butonu (Hamburger Menü) */
+        .menu-icon {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            background: transparent;
+            border: none;
+        }
+
+        .menu-icon span {
+            display: block;
+            height: 4px;
+            width: 100%;
+            background-color: #10b981;
+            border-radius: 9px;
+            transition: all 0.3s ease;
+        }
+
+        /* Açılır Yan Menü Paneli (Sidebar) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px; /* İlk başta gizli */
+            width: 300px;
+            height: 100%;
+            background: #111827;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            transition: right 0.4s ease;
+            z-index: 100;
+            padding: 30px;
+            text-align: left;
+            border-left: 3px solid #10b981;
+            box-sizing: border-box;
+        }
+
+        .sidebar.active {
+            right: 0; /* Menü açıldığında ekrana gelir */
+        }
+
+        .sidebar h3 {
+            color: #f59e0b;
+            border-bottom: 2px solid #374151;
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+
+        .sidebar p {
+            font-size: 0.95rem;
+            color: #d1d5db;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            float: right;
+        }
+
+        /* İçerik Alanları */
+        header {
+            padding: 80px 20px 40px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 4px solid #10b981;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            text-shadow: 2px 2px #ef4444;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: #1f2937;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid #374151;
+        }
+
+        .card h2 {
+            color: #f59e0b;
+            margin-top: 0;
+        }
+
+        /* Kararlı Zar Alanı */
+        .dice-area {
+            font-size: 5rem;
+            height: 100px;
+            line-height: 100px;
+            margin: 15px 0;
+            display: block;
+        }
+
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, -2px) rotate(-3deg); }
+            40% { transform: translate(-1px, -1px) rotate(1deg); }
+            60% { transform: translate(3px, 2px) rotate(3deg); }
+            80% { transform: translate(-1px, -2px) rotate(-1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* Form elemanları ve butonlar */
+        select {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+            margin: 10px 0;
+            background: #374151;
+            color: white;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-main { padding: 12px 25px; background-color: #ef4444; color: white; text-decoration: none; display: inline-block; border-radius: 30px; font-weight: bold;}
+        .btn-main:hover { background-color: #f87171; }
+        .btn-game { padding: 12px 20px; background-color: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;}
+        .btn-game:hover { background-color: #34d399; }
+        .btn-ai { padding: 12px 20px; background-color: #8b5cf6; color: white; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;}
+        .btn-ai:hover { background-color: #a78bfa; }
+
+        #ai-output {
+            background: #111827;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 80px;
+            text-align: left;
+            border-left: 4px solid #8b5cf6;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: #111827;
+            padding: 20px;
+            margin-top: 60px;
+            color: #6b7280;
+            border-top: 1px solid #374151;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <div id="mySidebar" class="sidebar">
+        <button class="close-btn" onclick="toggleMenu()">X Kapat</button>
+        <br>
+        <h3>🌲 Hakkımda</h3>
+        <p>Ben Tufan Berkay Kurnaz. Karadeniz Teknik Üniversitesi'nde Orman Mühendisliği eğitimi alıyorum. Aynı zamanda dijital dünyada içerik üreticiliği ve yazılımla ilgileniyorum!</p>
+        
+        <h3>🎓 Eğitim</h3>
+        <p>• Karadeniz Teknik Üniversitesi (KTÜ)<br>• Bölüm: Orman Mühendisliği</p>
+
+        <h3>🎬 YouTube</h3>
+        <p>Kurnaz TB kanalında tarih, oyun stratejileri ve mühendislik vizyonunu harmanlayan içerikler üretiyorum.</p>
+
+        <h3>📩 İletişim</h3>
+        <p>Sponsorluk, iş birlikleri ve öneriler için sosyal medya hesaplarımdan ya da YouTube kanalımdan bana ulaşabilirsin!</p>
+    </div>
+
+    <header>
+        <h1>🚀 TUFAN BERKAY KURNAZ</h1>
+        <p class="subtitle">Kurnaz TB | İçerik & Yazılım Üssü</p>
+        <br>
+        <a href="https://youtube.com/@kurnaztb?si=688b6RnmxjQEFVQe" target="_blank" class="btn-main">🔴 YouTube Kanalıma Git</a>
+    </header>
+
+    <div class="container">
+
+        <div class="card">
+            <h2>🎲 Kararlı Zar Atma</h2>
+            <p>Skorunu yükselt ve kanal enerjisini test et!</p>
+            <div id="dice-display" class="dice-area">⚀</div>
+            <button class="btn-game" onclick="zarAt()">Zarı Salla!</button>
+            <p id="total-score" style="font-weight: bold; color: #10b981; font-size: 1.2rem;">Toplam Skor: 0</p>
+        </div>
+
+        <div class="card">
+            <h2>♟️ Satranç Arenası</h2>
+            <p>Zekanı ve stratejini konuştur! Chess.com altyapısıyla bilgisayara karşı hemen oyna.</p>
+            <div style="font-size: 4.5rem; margin: 10px 0;">♞</div>
+            <a href="https://www.chess.com/play/computer" target="_blank" class="btn-main" style="background-color: #3b82f6; border-radius: 8px;">Odaya Giriş Yap ➔</a>
+        </div>
+
+        <div class="card">
+            <h2>🤖 Kurnaz AI İçerik Robotu</h2>
+            <p>Kanal kategorini seç, yapay zeka algoritması sana YouTube Shorts veya Uzun video fikri hazırlasın!</p>
+            
+            <select id="category-select">
+                <option value="tarih">📜 Osmanlı & Askeri Tarih</option>
+                <option value="orman">🌲 Orman Mühendisliği & Doğa</option>
+                <option value="gaming">🎮 Taktiksel Oyunlar (Hades/Ready or Not)</option>
+                <option value="vlog">🎥 Günlük Vlog & Challenge</option>
+            </select>
+
+            <button class="btn-ai" onclick="generateAIContent()">✨ Yapay Zeka Fikri Üret</button>
+            
+            <div id="ai-output">
+                <em>Kategori seçip butona basarak yapay zekayı tetikleyin...</em>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Tufan Berkay Kurnaz. Yeni Nesil Eğlence Projesi.</p>
+    </footer>
+
+    <script>
+        // --- 3 ÇİZGİ MENÜ MEKANİZMASI ---
+        function toggleMenu() {
+            const sidebar = document.getElementById('mySidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // --- ZAR ATMA KODU ---
+        let score = 0;
+        const diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
+        function zarAt() {
+            const dice = document.getElementById('dice-display');
+            dice.classList.remove('shake-animation');
+            void dice.offsetWidth; // Reflow tetikleme
+            dice.classList.add('shake-animation');
+
+            setTimeout(() => {
+                const randomValue = Math.floor(Math.random() * 6) + 1;
+                dice.innerText = diceFaces[randomValue - 1];
+                score += randomValue;
+                document.getElementById('total-score').innerText = "Toplam Skor: " + score + " 🔋";
+            }, 200);
+        }
+
+        // --- YAPAY ZEKA İÇERİK MOTORU ---
+        const aiDatabase = {
+            tarih: [
+                "**Konsept (Shorts):** Mimar Sinan'ın depreme karşı binalara koyduğu 'Dönen Sütunlar' gizemi. \n**Kanca Cümlesi:** Sadece tek bir dokunuşla binanın çöküp çökmeyeceğini anlıyordu!",
+                "**Konsept (Uzun Video):** İstanbul'un Fethi'nde Gemilerin Karadan Yürütülmesinin Bilinmeyen Askeri Mühendislik Detayları.",
+                "**Konsept (Shorts):** Osmanlı ordusundaki 'Lağımcılar' (Askeri Tünel Mühendisleri) nasıl çalışıyordu?"
+            ],
+            orman: [
+                "**Konsept (Uzun Video):** Bir Orman Mühendisi Perspektifinden: Sentinel Uyduları ile Orman Yangınları Nasıl Önceden Tespit Ediliyor?",
+                "**Konsept (Shorts):** Doğada Asla Yapmaman Gereken 3 Hayatta Kalma Hatası! (Mühendis Tavsiyesi)",
+                "**Konsept (Shorts):** Dünyanın En Akıllı Ağaç İletişim Ağı: 'Wood Wide Web' Nedir?"
+            ],
+            gaming: [
+                "**Konsept (Uzun Video):** Ready or Not - Gerçek Bir Askeri Stratejiyle Oynarsak Ne Olur? (Kusursuz Baskın Rehberi)",
+                "**Konsept (Shorts):** Hades'te Ölmeden Cehennemden Kaçmanızı Sağlayacak En Güçlü 3 Gizli Kombinasyon.",
+                "**Konsept (Shorts):** Valorant/LoL'de Profesyonellerin Kullandığı Gizli Pozisyon Alma Taktiği."
+            ],
+            vlog: [
+                "**Konsept (Uzun Video):** 24 Saat Boyunca Sadece Yapay Zekanın Söylediği Görevleri Yaparak Kamp Yapmak!",
+                "**Konsept (Shorts):** KTÜ Kampüsünde Tanımadığım İnsanlara 'Hangi Ağaçsın?' Testi Çözdürdüm!",
+                "**Konsept (Uzun Video):** Ordu - Trabzon Arası En Eğlenceli Yolculuk ve Ekiple Gizli Rota Keşfi."
+            ]
+        };
+
+        function generateAIContent() {
+            const category = document.getElementById('category-select').value;
+            const outputDiv = document.getElementById('ai-output');
+            outputDiv.innerHTML = "🤖 <em>Yapay zeka algoritması analiz ediyor...</em>";
+            
+            setTimeout(() => {
+                const pool = aiDatabase[category];
+                const randomIdea = pool[Math.floor(Math.random() * pool.length)];
+                outputDiv.innerHTML = randomIdea.replace(/\n/g, '<br>');
+            }, 600);
+        }
+    </script>
+</body>
+</html>
